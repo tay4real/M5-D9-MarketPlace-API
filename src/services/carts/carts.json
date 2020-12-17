@@ -1,0 +1,18 @@
+[
+    {   
+        "_id": "5f6b1991df85440017160812", 
+        "ownerId": "5f6b1991df8544001716080g", 
+        "name": "Stefano",
+        "surname": "Casasola",
+        "products" : [
+            {
+                "name":"3310",
+                "brand":"Nokia",
+                "description":"Super cool",
+                "price":1000,
+                "_id":"9a3apagskiod28tf"
+            }
+        ], 
+        "total": 0 
+    } 
+]
