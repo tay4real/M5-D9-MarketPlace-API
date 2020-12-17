@@ -4,7 +4,7 @@ const { writeFile, createReadStream } = require("fs-extra");
 const { pipeline } = require("stream");
 const zlib = require("zlib");
 const { join } = require("path");
-const { readDB, writeDB } = require("../../lib/utilities");
+const { getProducts, writeProducts } = require("../../lib/fsUtilities");
 
 const router = express.Router();
 
@@ -12,20 +12,6 @@ const upload = multer({});
 
 const productsFolderPath = join(__dirname, "../../../public/img/products");
 const productsFilePath = join(__dirname, "../products/products.json");
-
-// router.post("/:id/upload", upload.single("avatar"), async (req, res, next) => {
-//   try {
-//     console.log(productsFilePath);
-//     await writeFile(
-//       join(productsFilePath, req.file.originalname),
-//       req.file.buffer
-//     );
-//     res.send("ok");
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// });
 
 router.post("/:id/upload", upload.single("avatar"), async (req, res, next) => {
   try {
@@ -35,7 +21,7 @@ router.post("/:id/upload", upload.single("avatar"), async (req, res, next) => {
       req.file.buffer
     );
 
-    const productsDB = await readDB(productsFilePath);
+    const productsDB = await getProducts();
     const productItem = productsDB.filter(
       (product) => product._id === req.params.id
     );
@@ -55,7 +41,7 @@ router.post("/:id/upload", upload.single("avatar"), async (req, res, next) => {
       productItem[0]._id = req.params.id;
       productItem[0].updatedAt = new Date();
       newDb.push(productItem[0]);
-      await writeDB(productsFilePath, newDb);
+      await writeProducts(newDb);
 
       res.send("ok");
     } else {
@@ -75,7 +61,7 @@ router.post(
   async (req, res, next) => {
     try {
       const arrayOfPromises = req.files.map((file) =>
-        writeFile(join(projectsFolderPath, file.originalname), file.buffer)
+        writeProducts(file.buffer)
       );
       await Promise.all(arrayOfPromises);
       res.send("ok");

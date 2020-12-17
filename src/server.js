@@ -3,7 +3,7 @@ const listEndpoints = require("express-list-endpoints");
 const cors = require("cors");
 const { join } = require("path");
 const productsRouter = require("./services/products");
-const reviewsRouter = require("./services/reviews");
+
 const product_uploadsRouter = require("./services/product_uploads");
 const cartsRouter = require("./services/carts");
 
@@ -17,7 +17,7 @@ const {
 
 const server = express();
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 const publicFolderPath = join(__dirname, "../public");
 
 const loggerMiddleware = (req, res, next) => {
@@ -31,7 +31,7 @@ server.use(loggerMiddleware);
 server.use(express.static(publicFolderPath));
 
 server.use("/products", productsRouter);
-server.use("/reviews", reviewsRouter);
+
 server.use("/product", product_uploadsRouter);
 server.use("/carts", cartsRouter);
 
