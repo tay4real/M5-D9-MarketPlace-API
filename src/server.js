@@ -3,16 +3,12 @@ const listEndpoints = require("express-list-endpoints");
 const cors = require("cors");
 const { join } = require("path");
 const productsRouter = require("./services/products");
-
-const product_uploadsRouter = require("./services/product_uploads");
 const cartsRouter = require("./services/carts");
 
 const {
-  badRequest,
-  unauthorizedHandler,
-  forbiddenHandler,
+  badRequestHandler,
   notFoundHandler,
-  catchAllHandler,
+  genericErrorHandler,
 } = require("./errorHandling");
 
 const server = express();
@@ -31,15 +27,11 @@ server.use(loggerMiddleware);
 server.use(express.static(publicFolderPath));
 
 server.use("/products", productsRouter);
-
-server.use("/product", product_uploadsRouter);
 server.use("/carts", cartsRouter);
 
-server.use(badRequest);
+server.use(badRequestHandler);
 server.use(notFoundHandler);
-server.use(unauthorizedHandler);
-server.use(forbiddenHandler);
-server.use(catchAllHandler);
+server.use(genericErrorHandler);
 
 console.log(listEndpoints(server));
 

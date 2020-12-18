@@ -2,6 +2,7 @@ const express = require("express");
 const { check, validationResult } = require("express-validator");
 const uniqid = require("uniqid");
 const { getCarts, writeCarts } = require("../../lib/fsUtilities");
+const { getProducts, writeProducts } = require("../../lib/fsUtilities");
 
 const cartsRouter = express.Router();
 
@@ -40,20 +41,33 @@ cartsRouter.post(
   productsValidation,
   async (req, res, next) => {
     try {
-      const carts = await getcarts();
+      const carts = await getCarts();
+      const products = await getProducts();
 
-      const cartIndex = carts.findIndex(
-        (cart) => cart._id === req.params.cartId
+      const productIndex = products.findIndex(
+        (product) => product._id === req.params.productId
       );
 
-      if (cartIndex !== -1) {
+      // const cartIndex = carts.findIndex(
+      //   (cart) => cart._id === req.params.cartId
+      // );
+
+      if (productIndex !== -1) {
         // cart found
-        carts[cartIndex].products.push({
+        carts.push({
+          _id: uniqid(),
           ...req.body,
-          _id: req.params.productId,
-          createdAt: new Date(),
+          products: [
+            {
+              name: products[productIndex].name,
+              brand: products[productIndex].brand,
+              description: products[productIndex].description,
+              price: products[productIndex].price,
+              _id: products[productIndex]._id,
+            },
+          ],
         });
-        await writecarts(carts);
+        await writeCarts(carts);
         res.status(201).send(carts);
       } else {
         // cart not found
